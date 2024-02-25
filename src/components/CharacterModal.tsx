@@ -1,6 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 import { Character } from '../types/character';
 import { getCharacterBgColor } from '../utils/getCharacterBgColor';
+import { getCharacterColorByStatus } from '../utils/getCharacterColorByStatus';
 import Modal from './Modal';
 import StatusCircle from './StatusCircle';
 
@@ -22,7 +23,11 @@ const CharacterModal = ({
       bgColor={getCharacterBgColor(character.gender)}
     >
       <StyledCharacterModal>
-        <StyledImage src={character.image} alt={character.name} />
+        <StyledImage
+          src={character.image}
+          alt={character.name}
+          $borderColor={getCharacterColorByStatus(character.status)}
+        />
         <StyledInfoWrapper $gender={character.gender}>
           <StyledInfo>
             <StyledModalTitle>{character.name}</StyledModalTitle>
@@ -85,13 +90,13 @@ const imageAnimation = keyframes`
   }
 `;
 
-const StyledImage = styled.img`
+const StyledImage = styled.img<{ $borderColor: string }>`
   z-index: 1;
   border-radius: 50%;
   position: absolute;
   transform: translate(-50%, -50%);
-  border: solid 8px ${props => props.theme.colors.card.border};
-  box-shadow: 0 0 200px 2px ${props => props.theme.colors.card.border};
+  border: solid 8px ${props => props.$borderColor};
+  box-shadow: 0 0 200px 2px ${props => props.$borderColor};
 
   @media screen and (max-width: 901px) {
     animation: ${imageAnimation} 0.3s ease 0.5s;
