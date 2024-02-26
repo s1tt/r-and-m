@@ -1,30 +1,66 @@
-# React + TypeScript + Vite
+<h1 align="center" id="title">Тестовое задание</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<h2>🧐 Требования:</h2>
 
-Currently, two official plugins are available:
+<details>
+  <summary>ТЗ</summary>
+  
+Используя [Rick and Morty API](https://rickandmortyapi.com/), реализуйте веб-приложение со следующими функциями:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Пользователь может удобно просматривать всех персонажей и информацию о них (имя, статус, гендер), предоставляемые API.
+- Можно фильтровать персонажей по имени, статусу, виду, типу и полу.
+- Вышеуказанные фильтры могут применяться все вместе.
+- Пользователь может открыть всплывающее окно (popup) с полной информацией о персонаже.
 
-## Expanding the ESLint configuration
+## Технические требования
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Приложение написано на React. Для стилизации компонентов необходимо использовать библиотеку [Styled Components](https://styled-components.com/).
+- Приложение работает в современных браузерах (последние версии Chrome и Safari).
+  Поэтому использование новейших технологий и шаблонов проектирования приветствуется.
+- Не использовано сторонних библиотек с готовыми компонентами.
 
-- Configure the top-level `parserOptions` property like this:
+Мы не указываем требований к дизайну пользовательского интерфейса, однако ожидаем, что веб-приложение будет выглядеть красиво как на десктопе, так и на мобильной версии.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+Стэк:
+Typescript
+React
+TanStack Query
+Styled components
+
+</details>
+
+<h2>🚀 ДЕМО</h2>
+
+[https://r-and-m-five.vercel.app/](https://r-and-m-five.vercel.app/)
+
+<h2>🛠️ Установка и Запуск:</h2>
+
+<p>1. Клонировать репозиторий:</p>
+
+```
+git clone https://github.com/s1tt/r-and-m.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+<p>2. Перейти в директорию проекта:</p>
+
+```
+cd r-and-m
+```
+
+<p>3. Установить зависимости:</p>
+
+```
+npm install
+```
+
+<p>4. Запустить приложение в режиме разработки:</p>
+
+```
+npm run dev
+```
+
+<p>5. Адрес сайта по умолчанию:</p>
+
+```
+http://localhost:5173/
+```
