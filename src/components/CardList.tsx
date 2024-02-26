@@ -1,37 +1,41 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import {
+  FetchNextPageOptions,
+  InfiniteData,
+  InfiniteQueryObserverResult
+} from '@tanstack/react-query';
+import { memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled, { keyframes } from 'styled-components';
-import { getCharacters } from '../api/chracters';
 import { IQueryParams } from '../pages/MainPage';
+import { getCharactersResponse } from '../types/character';
 import CharacterCard from './CharacterCard';
 import CharactersNotFound from './CharactersNotFound';
 
 interface CardListProps {
   queryParams: IQueryParams;
   setQueryParams: (prev: IQueryParams) => void;
+  characters: InfiniteData<getCharactersResponse, unknown> | undefined;
+  fetchNextPage: (
+    options?: FetchNextPageOptions | undefined
+  ) => Promise<
+    InfiniteQueryObserverResult<
+      InfiniteData<getCharactersResponse, unknown>,
+      Error
+    >
+  >;
+  isFetching: boolean;
+  isFetchingNextPage: boolean;
 }
 
-const CardList = ({ queryParams, setQueryParams }: CardListProps) => {
+const CardList = ({
+  queryParams,
+  setQueryParams,
+  characters,
+  fetchNextPage,
+  isFetching,
+  isFetchingNextPage
+}: CardListProps) => {
   const { ref, inView } = useInView();
-  const { data, fetchNextPage, isFetching, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: [
-        'characters',
-        queryParams.status,
-        queryParams.name,
-        queryParams.gender
-      ],
-      queryFn: props => getCharacters(props, queryParams),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, pages) => {
-        if (lastPage.info.pages !== pages.length + 1) {
-          return pages.length + 1;
-        } else {
-          return undefined;
-        }
-      }
-    });
 
   useEffect(() => {
     window.scrollTo({
@@ -54,12 +58,12 @@ const CardList = ({ queryParams, setQueryParams }: CardListProps) => {
   return (
     <StyledSection>
       <CardListWrapper>
-        {!isFetching && !data && <CharactersNotFound />}
+        {!isFetching && !characters && <CharactersNotFound />}
         {isFetching && !isFetchingNextPage ? (
           <StyledLoadingImage src='/LoadingImage.png' alt='Loading' />
         ) : (
-          data &&
-          data?.pages.slice(0, queryParams.page).map(page =>
+          characters &&
+          characters?.pages.slice(0, queryParams.page).map(page =>
             page.results.map(character => (
               <li
                 key={character.id}
@@ -75,20 +79,12 @@ const CardList = ({ queryParams, setQueryParams }: CardListProps) => {
           )
         )}
       </CardListWrapper>
-
-      {data && !data.pages[data.pages.length - 1].info.next && (
-        <StyledBottomText>No more data!</StyledBottomText>
-      )}
-
-      {/* {data && data.pages[data.pages.length - 1].info.next ? (
-        <StyledBottomText ref={ref}>Loading...</StyledBottomText>
-      ) : (
-        <StyledBottomText>No more data!</StyledBottomText>
-      )} */}
     </StyledSection>
   );
 };
+const MemoizedCardList = memo(CardList);
 
+export { MemoizedCardList as MainPage };
 export default CardList;
 
 const loadingImageAnimation = keyframes`
@@ -127,9 +123,4 @@ const CardListWrapper = styled.ul`
 
 const StyledSection = styled.section`
   width: 100%;
-`;
-
-const StyledBottomText = styled.p`
-  text-align: center;
-  padding: 40px 0;
 `;

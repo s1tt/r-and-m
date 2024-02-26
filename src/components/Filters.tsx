@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useDebounce } from '../hooks/useDebounce';
 import { IQueryParams } from '../pages/MainPage';
@@ -9,19 +9,31 @@ import RadioButton from './RadioButton';
 interface FiltersProps {
   queryParams: IQueryParams;
   setQueryParams: (prev: IQueryParams) => void;
+  isFetching: boolean;
 }
 
-const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
+const Filters = ({ setQueryParams, queryParams, isFetching }: FiltersProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
-  const debouncedFilterName = useDebounce<string>(inputValue, 500);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const debouncedFilterName = useDebounce<string | undefined>(
+    inputRef.current?.value,
+    500
+  );
 
   useEffect(() => {
     setQueryParams({
       ...queryParams,
-      name: debouncedFilterName,
+      name: debouncedFilterName || null,
       page: 1
     });
   }, [debouncedFilterName]);
+
+  useEffect(() => {
+    if (isInputFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isInputFocused, isFetching]);
 
   const setQueryParamsHandler = (
     key: keyof IQueryParams,
@@ -48,6 +60,7 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.status === 'Alive'}
             label='Alive'
             onChange={() => setQueryParamsHandler('status', 'Alive')}
+            disabled={isFetching}
           />
 
           <RadioButton
@@ -56,6 +69,7 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.status === 'Dead'}
             label='Dead'
             onChange={() => setQueryParamsHandler('status', 'Dead')}
+            disabled={isFetching}
           />
           <RadioButton
             value='unknown'
@@ -63,6 +77,7 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.status === 'unknown'}
             label='Unknown'
             onChange={() => setQueryParamsHandler('status', 'unknown')}
+            disabled={isFetching}
           />
         </ButtonsGroup>
       </StyledFilterSection>
@@ -75,6 +90,7 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.gender === 'Male'}
             label='Male'
             onChange={() => setQueryParamsHandler('gender', 'Male')}
+            disabled={isFetching}
           />
 
           <RadioButton
@@ -83,6 +99,7 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.gender === 'Female'}
             label='Female'
             onChange={() => setQueryParamsHandler('gender', 'Female')}
+            disabled={isFetching}
           />
           <RadioButton
             value='Genderless'
@@ -90,6 +107,7 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.gender === 'Genderless'}
             label='Genderless'
             onChange={() => setQueryParamsHandler('gender', 'Genderless')}
+            disabled={isFetching}
           />
           <RadioButton
             value='unknown'
@@ -97,22 +115,29 @@ const Filters = ({ setQueryParams, queryParams }: FiltersProps) => {
             checked={queryParams.gender === 'unknown'}
             label='Unknown'
             onChange={() => setQueryParamsHandler('gender', 'unknown')}
+            disabled={isFetching}
           />
         </ButtonsGroup>
       </StyledFilterSection>
       <StyledFilterSection>
         <h3>Search by name</h3>
         <Input
+          ref={inputRef}
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
           placeholder='Search by name'
+          disabled={isFetching}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
         />
       </StyledFilterSection>
     </StyledFilters>
   );
 };
 
-export default Filters;
+const MemoizedFilters = memo(Filters);
+
+export { MemoizedFilters as Filters };
 
 const StyledFilters = styled.div`
   max-width: 300px;

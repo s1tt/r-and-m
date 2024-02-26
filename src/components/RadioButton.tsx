@@ -35,6 +35,10 @@ const StyledInput = styled.input`
   visibility: hidden;
   border: none;
   outline: none;
+
+  &:disabled + span {
+    opacity: 0.5;
+  }
 `;
 
 const StyledLabel = styled.span<{ $checked: boolean }>`

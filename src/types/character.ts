@@ -1,4 +1,4 @@
-export interface getAllCharactersResponse {
+export interface getCharactersResponse {
   info: Info;
   results: Character[];
 }

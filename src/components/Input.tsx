@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input = ({ type = 'text', ...props }: InputProps) => {
-  return (
-    <StyledInput>
-      <StyledInputText type={type} {...props} />
-    </StyledInput>
-  );
-};
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ type = 'text', ...props }, ref) => {
+    return (
+      <StyledInputLabel>
+        <StyledInput type={type} ref={ref} {...props} />
+      </StyledInputLabel>
+    );
+  }
+);
 
 export default Input;
 
-const StyledInput = styled.label``;
+const StyledInputLabel = styled.label``;
 
-const StyledInputText = styled.input`
+const StyledInput = styled.input`
   width: 100%;
   margin-bottom: 10px;
   background: rgba(0, 0, 0, 0.3);
