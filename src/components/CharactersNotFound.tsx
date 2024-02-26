@@ -15,10 +15,7 @@ const CharactersNotFound = () => {
 export default CharactersNotFound;
 
 const StyledImage = styled.img`
-  /* display: flex; */
   width: 100%;
-  /* max-width: 100%; */
-  /* max-height: 100%; */
 `;
 
 const StyledText = styled.p`
@@ -32,5 +29,5 @@ const StyledCharactersNotFound = styled.div`
   justify-content: center;
   align-items: center;
   max-width: 350px;
-  /* max-height: 500px; */
+  grid-column: 4 span;
 `;

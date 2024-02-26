@@ -5,11 +5,12 @@ import {
 } from '@tanstack/react-query';
 import { memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { IQueryParams } from '../pages/MainPage';
 import { getCharactersResponse } from '../types/character';
 import CharacterCard from './CharacterCard';
 import CharactersNotFound from './CharactersNotFound';
+import SkeletonCharacterCard from './SkeletonCharacterCard';
 
 interface CardListProps {
   queryParams: IQueryParams;
@@ -59,10 +60,7 @@ const CardList = ({
     <StyledSection>
       <CardListWrapper>
         {!isFetching && !characters && <CharactersNotFound />}
-        {isFetching && !isFetchingNextPage ? (
-          <StyledLoadingImage src='/LoadingImage.png' alt='Loading' />
-        ) : (
-          characters &&
+        {characters &&
           characters?.pages.slice(0, queryParams.page).map(page =>
             page.results.map(character => (
               <li
@@ -76,8 +74,13 @@ const CardList = ({
                 <CharacterCard character={character} />
               </li>
             ))
-          )
-        )}
+          )}
+        {(isFetching || isFetchingNextPage) &&
+          new Array(4).fill(null).map((_, index) => (
+            <li key={index}>
+              <SkeletonCharacterCard />
+            </li>
+          ))}
       </CardListWrapper>
     </StyledSection>
   );
@@ -87,32 +90,12 @@ const MemoizedCardList = memo(CardList);
 export { MemoizedCardList as MainPage };
 export default CardList;
 
-const loadingImageAnimation = keyframes`
-  0% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.3;
-  }
-`;
-
-const StyledLoadingImage = styled.img`
-  display: flex;
-  margin: 0 auto;
-  align-items: center;
-  width: 100%;
-  animation: ${loadingImageAnimation} 1s infinite;
-`;
-
 const CardListWrapper = styled.ul`
   flex: 1;
   margin-left: 310px;
   list-style-type: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   justify-items: center;
   gap: 90px 0;
 
